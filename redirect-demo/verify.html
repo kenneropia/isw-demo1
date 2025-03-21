@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Verification - Interswitch Demo</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.5;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .success {
+            background-color: #f0fff4;
+            border: 1px solid #68d391;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .error {
+            background-color: #fff5f5;
+            border: 1px solid #fc8181;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .result-details {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 0.25rem;
+        }
+
+        .amount-validation {
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="verification-result">
+            <div class="loading">
+                <p>Verifying transaction...</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { formatAmount } from '../src/types';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const txnRef = urlParams.get('txnref');
+            const amount = urlParams.get('amount');
+            const responseCode = urlParams.get('resp');
+
+            const resultContainer = document.getElementById('verification-result');
+
+            if (!txnRef || !amount || !responseCode) {
+                showError('Invalid transaction parameters');
+                return;
+            }
+
+            const isSuccess = responseCode === '00';
+            const resultElement = document.createElement('div');
+            resultElement.className = isSuccess ? 'success' : 'error';
+
+            const message = isSuccess
+                ? 'Payment successful!'
+                : 'Payment failed. Please try again.';
+
+            resultElement.innerHTML = `
+                <h2>${message}</h2>
+                <div class="result-details">
+                    <p><strong>Transaction Reference:</strong> ${txnRef}</p>
+                    <p><strong>Amount:</strong> ₦${(parseInt(amount) / 100).toFixed(2)}</p>
+                    <p><strong>Response Code:</strong> ${responseCode}</p>
+                </div>
+            `;
+
+            resultContainer.innerHTML = '';
+            resultContainer.appendChild(resultElement);
+        });
+
+        function showError(message) {
+            const resultContainer = document.getElementById('verification-result');
+            resultContainer.innerHTML = `
+                <div class="error">
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+
+</html>

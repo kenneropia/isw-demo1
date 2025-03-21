@@ -1,0 +1,17 @@
+{
+  "name": "isw-demo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node init && vite",
+    "build": "node init && tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "node-fetch": "^3.3.2",
+    "typescript": "~5.7.2",
+    "vite": "^6.2.0"
+  }
+}
