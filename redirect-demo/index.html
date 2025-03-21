@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interswitch Web Redirect Demo</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.5;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2d3748;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.25rem;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: #4a5568;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.25rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #2d3748;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Interswitch Web Redirect Demo</h1>
+        <form id="payment-form" method="post" action="https://sandbox.interswitchng.com/collections/w/pay">
+            <input type="hidden" name="merchant_code" value="VNA" />
+            <input type="hidden" name="pay_item_id" value="103" />
+            <input type="hidden" name="currency" value="566" />
+            <input type="hidden" name="site_redirect_url" value="/redirect-demo/verify.html" />
+            <input type="hidden" name="txn_ref" id="txn_ref" />
+
+            <div class="form-group">
+                <label for="cust_name">Full Name:</label>
+                <input type="text" name="cust_name" id="cust_name" required />
+            </div>
+
+            <div class="form-group">
+                <label for="cust_email">Email:</label>
+                <input type="email" name="cust_email" id="cust_email" required />
+            </div>
+
+            <div class="form-group">
+                <label for="amount">Amount (NGN):</label>
+                <input type="number" id="amount" min="100" required />
+                <input type="hidden" name="amount" id="formatted_amount" />
+            </div>
+
+            <div class="form-group">
+                <label for="pay_item_name">Payment Description:</label>
+                <input type="text" name="pay_item_name" id="pay_item_name" required />
+            </div>
+
+            <button type="submit">Proceed to Payment</button>
+        </form>
+    </div>
+
+    <script type="module">
+        import { generateTransactionRef, formatAmount } from '../src/types';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Generate and set transaction reference
+            document.getElementById('txn_ref').value = generateTransactionRef();
+
+            // Handle amount formatting
+            const amountInput = document.getElementById('amount');
+            const formattedAmountInput = document.getElementById('formatted_amount');
+
+            amountInput.addEventListener('input', () => {
+                const amount = parseFloat(amountInput.value) || 0;
+                formattedAmountInput.value = formatAmount(amount);
+            });
+        });
+    </script>
+</body>
+
+</html>
